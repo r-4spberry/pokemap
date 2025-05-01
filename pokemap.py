@@ -305,7 +305,7 @@ with dpg.window(label="Wall Extractor", width=1100, height=700, tag="main_window
         dpg.add_file_extension(".*")
     with dpg.handler_registry():
         dpg.add_mouse_click_handler(callback=on_mouse_click)
-dpg.create_viewport(title="Wall Extractor", width=1100, height=700)
+dpg.create_viewport(title="pokemap", width=1100, height=700)
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.set_primary_window("main_window", True)
