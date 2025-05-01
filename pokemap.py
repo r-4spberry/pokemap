@@ -90,7 +90,6 @@ def draw_overlays(normal_len):
 
     drawlist_width = dpg.get_item_width(dl)
     drawlist_height = dpg.get_item_height(dl)
-    print(drawlist_width)
     dpg.draw_image(
         texture_tag=state["texture_tag"],
         pmin=(0, 0),
@@ -219,7 +218,6 @@ def open_file_dialog():
 def start_area_pick(name):
     state["selecting"] = name
     state["tmp_pts"].clear()
-    print(f"Click two corners for Area {name}…")
 
 
 def mouse_to_image_coords(mx, my):
