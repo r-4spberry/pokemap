@@ -11,31 +11,30 @@ import base64
 dpg.create_context()
 
 
-
 def encode_image_to_base64(img):
     _, buf = cv2.imencode(".png", img)
     return base64.b64encode(buf).decode("utf-8")
 
 
 def cv_img_to_rgba(img):
-    if len(img.shape) == 2: 
+    if len(img.shape) == 2:
         img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGBA)
-    img = img.astype(np.float32) / 255.0 
+    img = img.astype(np.float32) / 255.0
     h, w, _ = img.shape
     return w, h, img.flatten()
 
 
 state = {
     "image_path": None,
-    "orig_img": None, 
-    "binary_img": None, 
-    "walls": [], 
+    "orig_img": None,
+    "binary_img": None,
+    "walls": [],
     "texture_tag": "texture_tag",
     "drawlist_tag": "drawlist_tag",
-    "areas": [], 
-    "selecting": None,  
-    "tmp_pts": [], 
+    "areas": [],
+    "selecting": None,
+    "tmp_pts": [],
 }
 
 
@@ -67,7 +66,7 @@ def process_image(threshold=127, epsilon=2.0, normal_len=10):
             length = np.hypot(dx, dy)
             if length == 0:
                 continue
-            nx, ny = dy / length, -dx / length  
+            nx, ny = dy / length, -dx / length
 
             wall = {
                 "x1": int(p1[0]),
@@ -102,8 +101,8 @@ def draw_overlays(normal_len):
     scale_x = drawlist_width / img_w
     scale_y = drawlist_height / img_h
 
-    colors = {"A": (0, 200, 255, 50), "B": (255, 0, 200, 50)} 
-    border = {"A": (0, 200, 255, 200), "B": (255, 0, 200, 200)}  
+    colors = {"A": (0, 200, 255, 50), "B": (255, 0, 200, 50)}
+    border = {"A": (0, 200, 255, 200), "B": (255, 0, 200, 200)}
 
     for area in state["areas"]:
         pmin = (area["x1"] * scale_x, area["y1"] * scale_y)
@@ -125,8 +124,7 @@ def draw_overlays(normal_len):
         mx = (p1[0] + p2[0]) / 2
         my = (p1[1] + p2[1]) / 2
         tip = (mx + wall["nx"] * normal_len, my + wall["ny"] * normal_len)
-        dpg.draw_arrow((mx, my), tip, size=6, color=(255, 0, 0, 255), parent=dl)
-
+        dpg.draw_arrow(tip, (mx, my), size=6, color=(255, 0, 0, 255), parent=dl)
 
 
 def on_image_selected(sender, app_data):
@@ -174,14 +172,14 @@ def on_save(sender, app_data):
         save_path = os.path.splitext(state["image_path"])[0] + ".json"
     if not save_path.endswith(".json"):
         save_path += ".json"
-    
+
     if os.path.exists(save_path):
         base, ext = os.path.splitext(save_path)
         i = 1
         while os.path.exists(f"{base}_{i}{ext}"):
             i += 1
         save_path = f"{base}_{i}{ext}"
-        
+
     try:
         walls = state["walls"]
 
@@ -206,7 +204,7 @@ def on_save(sender, app_data):
 
 def open_file_dialog():
     root = tk.Tk()
-    root.withdraw() 
+    root.withdraw()
     file_path = filedialog.askopenfilename(
         filetypes=[("Image files", "*.png;*.jpg;*.jpeg;*.bmp;*.tiff")]
     )
@@ -265,7 +263,7 @@ with dpg.window(label="Wall Extractor", width=1100, height=700, tag="main_window
         dpg.add_input_text(label="", width=200, tag="save_path_input")
         dpg.add_button(label="Save", callback=on_save)
 
-    with dpg.group(horizontal=True):
+    with dpg.group(horizontal=False):
         dpg.add_slider_int(
             label="Threshold",
             min_value=0,
